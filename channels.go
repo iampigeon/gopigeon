@@ -6,14 +6,13 @@ import (
 
 // MQTT ...
 type MQTT struct {
-	Topic   string      `json:"mqtt_topic"`
-	Payload interface{} `json:"mqtt_payload,omitempty"`
+	Payload map[string]interface{} `json:"mqtt_payload,omitempty"`
 }
 
 // SMS ...
 type SMS struct {
-	Phones []string `json:"phones"`
-	Text   string   `json:"text"`
+	Phone string `json:"phone"`
+	Text  string `json:"text"`
 }
 
 // HTTP ...
@@ -26,4 +25,12 @@ type HTTP struct {
 // Push ...
 type Push struct {
 	DeviceID string `json:"device_id"`
+}
+
+// Channels represents the channels key
+type Channels struct {
+	MQTT *MQTT `json:"mqtt,omitempty"`
+	SMS  *SMS  `json:"sms,omitempty"`
+	HTTP *HTTP `json:"http,omitempty"`
+	Push *Push `json:"push,omitempty"`
 }
