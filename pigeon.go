@@ -48,6 +48,14 @@ type Message struct {
 	Channels    *Channels `json:"channels"`
 }
 
+// MessageResponse ...
+type MessageResponse struct {
+	ID        string `json:"id"`
+	Content   string `json:"content"`
+	Status    string `json:"status"`
+	SubjectID string `json:"subject_id"`
+}
+
 //Deliver ...
 // the delay will be handled internally
 func (p *Pigeon) Deliver(m *Message) (*PigeonResponse, error) {
@@ -71,6 +79,24 @@ func (p *Pigeon) Deliver(m *Message) (*PigeonResponse, error) {
 func (p *Pigeon) FetchStatusByID(id string) (*PigeonResponse, error) {
 	endpoint := fmt.Sprintf("/api/v1/messages/%s/status", id)
 	res, err := p.client.Request(http.MethodGet, endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pr := new(PigeonResponse)
+
+	err = UnmarshalJSON(res.Body, pr)
+	if err != nil {
+		return nil, err
+	}
+
+	return pr, nil
+}
+
+// CancelMessage ...
+func (p *Pigeon) CancelMessage(id string) (*PigeonResponse, error) {
+	endpoint := fmt.Sprintf("/api/v1/messages/%s/cancel", id)
+	res, err := p.client.Request(http.MethodPost, endpoint, nil)
 	if err != nil {
 		return nil, err
 	}
