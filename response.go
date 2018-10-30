@@ -3,9 +3,15 @@ package iampigeon
 // ResponseMessages represents the information of every message
 // by channel and id
 type ResponseMessages struct {
-	ID      string `json:"id"`
-	Channel string `json:"channel"`
-	Err     string `json:"error,omitempty"`
+	Messages []*MessageInformation `json:"messages"`
+}
+
+// MessageInformation ...
+type MessageInformation struct {
+	ID      string      `json:"id"`
+	Channel string      `json:"channel"`
+	Status  string      `json:"status,omitempty"`
+	Error   interface{} `json:"error,omitempty"`
 }
 
 // TODO: find a smart way to do this.
