@@ -9,11 +9,10 @@ import (
 )
 
 const (
-	pigeonAPI        = "http://localhost:5050"
 	subjectsEndpoint = "/api/v1/subjects"
 )
 
-func makeRequest(endpoint, apiKey string) (*http.Request, error) {
+func makeRequest(endpoint, apiKey, pigeonAPI string) (*http.Request, error) {
 	u, err := url.Parse(fmt.Sprintf("%s%s", pigeonAPI, endpoint))
 	if err != nil {
 		return nil, err
@@ -30,10 +29,10 @@ func makeRequest(endpoint, apiKey string) (*http.Request, error) {
 	return req, nil
 }
 
-func getSubjectsList(apiKey string) ([]*subject, error) {
-	subjects := make([]*subject, 0)
+func getSubjectsList(apiKey, host string) ([]*Subject, error) {
+	subjects := make([]*Subject, 0)
 
-	req, err := makeRequest(subjectsEndpoint, apiKey)
+	req, err := makeRequest(subjectsEndpoint, apiKey, host)
 	if err != nil {
 		return subjects, err
 	}
@@ -58,10 +57,12 @@ func getSubjectsList(apiKey string) ([]*subject, error) {
 		return subjects, err
 	}
 
-	err = decode(pr.Data, &struct{ Subjects []*subject }{Subjects: subjects})
+	rs := new(struct{ Subjects []*Subject })
+
+	err = Decode(pr.Data, rs)
 	if err != nil {
 		return subjects, err
 	}
 
-	return subjects, nil
+	return rs.Subjects, nil
 }
